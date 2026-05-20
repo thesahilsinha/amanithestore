@@ -18,7 +18,7 @@ export default async function ProductsPage({ searchParams }: any) {
 
   let query = supabase
     .from("products")
-    .select("id,name,slug,price_inr,primary_image_url,secondary_images,tags,stock,is_bestseller,is_amani_favourite,created_at", { count: "exact" })
+    .select("id,name,slug,price_inr,primary_image_url,secondary_images,tags,stock,size_inventory,is_bestseller,is_amani_favourite,created_at", { count: "exact" })
     .eq("is_active", true)
     .range(offset, offset + limit - 1)
     .order("created_at", { ascending: false })

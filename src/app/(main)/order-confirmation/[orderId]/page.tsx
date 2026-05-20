@@ -1,30 +1,24 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { CheckCircle, Package } from 'lucide-react'
-
-export default async function OrderConfirmationPage({ params }: { params: { orderId: string } }) {
+import { CheckCircle } from 'lucide-react'
+export default async function OrderConfirmationPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) notFound()
-
   const { data: order } = await supabase
     .from('orders')
     .select('*')
     .eq('id', orderId)
     .eq('user_id', user.id)
     .single()
-
   if (!order) notFound()
-
   const statusSteps = ['confirmed', 'shipped', 'delivered']
   const currentStep = statusSteps.indexOf(order.status)
-
   return (
     <div className="min-h-screen py-16 px-6" style={{ background: '#FAFAF7' }}>
       <div className="max-w-[640px] mx-auto">
-        {/* Header */}
         <div className="text-center mb-10">
           <CheckCircle size={48} strokeWidth={1} style={{ color: '#B8952A', margin: '0 auto 16px' }} />
           <p className="text-[10px] tracking-[5px] uppercase mb-2" style={{ color: '#B8952A' }}>Order Confirmed</p>
@@ -36,8 +30,6 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
             Confirmation sent to <strong>{order.customer_email}</strong>
           </p>
         </div>
-
-        {/* Order tracking */}
         <div className="p-6 mb-6" style={{ background: '#fff', border: '1px solid #e8e0d0' }}>
           <p className="text-[10px] tracking-[3px] uppercase mb-6" style={{ color: '#B8952A' }}>Order Status</p>
           <div className="flex items-center justify-between relative">
@@ -61,8 +53,6 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
             ))}
           </div>
         </div>
-
-        {/* Order items */}
         <div className="p-6 mb-6" style={{ background: '#fff', border: '1px solid #e8e0d0' }}>
           <p className="text-[10px] tracking-[3px] uppercase mb-4" style={{ color: '#B8952A' }}>Items Ordered</p>
           {order.items?.map((item: any, i: number) => (
@@ -76,8 +66,6 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
             <span style={{ color: '#B8952A' }}>₹{order.total_inr?.toLocaleString('en-IN')}</span>
           </div>
         </div>
-
-        {/* Shipping address */}
         <div className="p-6 mb-8" style={{ background: '#fff', border: '1px solid #e8e0d0' }}>
           <p className="text-[10px] tracking-[3px] uppercase mb-3" style={{ color: '#B8952A' }}>Shipping To</p>
           <p className="text-[13px] leading-relaxed" style={{ color: '#555' }}>
@@ -86,8 +74,6 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
             {order.city}, {order.state} — {order.pincode}
           </p>
         </div>
-
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Link href="/account/orders" className="flex-1 py-3 text-center text-white text-[10px] tracking-[3px] uppercase" style={{ background: '#1a1a1a' }}>
             View Orders

@@ -8,9 +8,10 @@ async function checkAdmin() {
   return user?.email === process.env.ADMIN_EMAIL ? user : null
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const user = await checkAdmin()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  await adminSupabase.from('categories').delete().eq('id', params.id)
+  await adminSupabase.from('categories').delete().eq('id', id)
   return NextResponse.json({ success: true })
 }

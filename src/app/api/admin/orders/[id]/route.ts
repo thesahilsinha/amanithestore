@@ -1,20 +1,19 @@
-import { adminSupabase } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (user?.email !== process.env.ADMIN_EMAIL) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { status } = await req.json()
-  const { data, error } = await adminSupabase
+  const { data } = await supabase
     .from('orders')
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq('id', params.id)
-    .select()
+    .select('*')
+    .eq('id', id)
+    .eq('user_id', user.id)
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json({ order: data })
 }

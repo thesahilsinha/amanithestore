@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 
-export default async function OrderDetailPage({ params }: { params: { id: string } }) {
+export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -28,7 +28,6 @@ export default async function OrderDetailPage({ params }: { params: { id: string
       </div>
 
       <div className="max-w-[800px] mx-auto px-6 md:px-12 py-12">
-        {/* Tracking */}
         <div className="p-6 mb-6" style={{ background: '#fff', border: '1px solid #e8e0d0' }}>
           <p className="text-[10px] tracking-[3px] uppercase mb-6" style={{ color: '#B8952A' }}>Order Tracking</p>
           <div className="flex items-center justify-between relative">
@@ -53,7 +52,6 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           </div>
         </div>
 
-        {/* Items */}
         <div className="p-6 mb-6" style={{ background: '#fff', border: '1px solid #e8e0d0' }}>
           <p className="text-[10px] tracking-[3px] uppercase mb-4" style={{ color: '#B8952A' }}>Items</p>
           {order.items?.map((item: any, i: number) => (
@@ -72,7 +70,6 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           </div>
         </div>
 
-        {/* Shipping */}
         <div className="p-6 mb-8" style={{ background: '#fff', border: '1px solid #e8e0d0' }}>
           <p className="text-[10px] tracking-[3px] uppercase mb-3" style={{ color: '#B8952A' }}>Shipping Address</p>
           <p className="text-[13px] leading-relaxed" style={{ color: '#555' }}>

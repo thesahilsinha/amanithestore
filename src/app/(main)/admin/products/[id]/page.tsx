@@ -4,7 +4,7 @@ import AdminLayout from '@/components/admin/AdminLayout'
 import AdminProductForm from '@/components/admin/AdminProductForm'
 import { notFound } from 'next/navigation'
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin()
   const { id } = await params
   const [{ data: product }, { data: categories }] = await Promise.all([

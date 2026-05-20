@@ -1,4 +1,4 @@
-import { requireAdmin } from '@/lib/supabase/admin'
+import { requireAdmin } from '@/lib/supabase/admin-auth'
 import { adminSupabase } from '@/lib/supabase/admin'
 import AdminLayout from '@/components/admin/AdminLayout'
 import AdminProductForm from '@/components/admin/AdminProductForm'

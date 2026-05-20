@@ -1,0 +1,10 @@
+import { redirect } from 'next/navigation'
+import { createClient as createServerClient } from '@/lib/supabase/server'
+
+export async function requireAdmin() {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+  if (user.email !== process.env.ADMIN_EMAIL) redirect('/')
+  return user
+}

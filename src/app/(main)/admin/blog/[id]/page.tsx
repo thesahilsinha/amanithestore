@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import AdminLayout from '@/components/admin/AdminLayout'
 import toast from 'react-hot-toast'
-import { adminSupabase } from '@/lib/supabase/admin'
 
 export default function EditBlogPage() {
   const { id } = useParams()
@@ -13,9 +12,11 @@ export default function EditBlogPage() {
   const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }))
 
   useEffect(() => {
-    adminSupabase.from('blog_posts').select('*').eq('id', id).single().then(({ data }) => {
-      if (data) setForm({ ...data, tags: Array.isArray(data.tags) ? data.tags.join(', ') : data.tags ?? '' })
-    })
+    fetch(`/api/admin/blog/${id}`)
+      .then(r => r.json())
+      .then(({ post }) => {
+        if (post) setForm({ ...post, tags: Array.isArray(post.tags) ? post.tags.join(', ') : post.tags ?? '' })
+      })
   }, [id])
 
   const handleSave = async () => {

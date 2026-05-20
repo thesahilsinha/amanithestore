@@ -1,4 +1,4 @@
-﻿import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { Suspense } from "react"
 import ProductGrid from "@/components/products/ProductGrid"
 import ProductFilters from "@/components/products/ProductFilters"
@@ -65,3 +65,4 @@ export default async function ProductsPage({ searchParams }: any) {
     </div>
   )
 }
+

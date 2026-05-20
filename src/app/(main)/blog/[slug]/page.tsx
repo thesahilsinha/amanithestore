@@ -1,21 +1,18 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-
 export const revalidate = 60
-
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
   const supabase = await createClient()
-  const { data } = await supabase.from('blog_posts').select('meta_title,meta_description,title').eq('slug', params.slug).single()
+  const { data } = await supabase.from('blog_posts').select('meta_title,meta_description,title').eq('slug', slug).single()
   return { title: data?.meta_title || `${data?.title} — AMANI`, description: data?.meta_description || '' }
 }
-
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const supabase = await createClient()
   const { data: post } = await supabase.from('blog_posts').select('*').eq('slug', slug).eq('is_published', true).single()
   if (!post) notFound()
-
   return (
     <div className="min-h-screen" style={{ background: '#fff' }}>
       {post.featured_image_url && (
